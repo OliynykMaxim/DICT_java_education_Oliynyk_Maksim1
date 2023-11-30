@@ -1,7 +1,9 @@
 package Hangman;
 
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Hangman {
     public static void main(String[] args) {
@@ -16,7 +18,8 @@ public class Hangman {
         }
 
         int attempts = 8;
-        int incorrectGuesses = 0;
+        Set<Character> guessedLettersSet = new HashSet<>();
+        int correctGuesses = 0;
 
         System.out.println("HANGMAN");
         System.out.println(String.valueOf(guessedLetters));
@@ -24,34 +27,53 @@ public class Hangman {
 
         while (attempts > 0) {
             System.out.print("Input a letter: > ");
-            char guess = scanner.nextLine().toLowerCase().charAt(0);
+            String input = scanner.nextLine().toLowerCase();
+
+            if (input.length() != 1) {
+                System.out.println("You should input a single letter");
+                System.out.println(String.valueOf(guessedLetters));
+                continue;
+            }
+
+            char guess = input.charAt(0);
+
+            if (!Character.isLowerCase(guess)) {
+                System.out.println("Please enter a lowercase English letter");
+                System.out.println(String.valueOf(guessedLetters));
+                continue;
+            }
+
+            if (guessedLettersSet.contains(guess)) {
+                System.out.println("You've already guessed this letter");
+                System.out.println(String.valueOf(guessedLetters));
+                continue;
+            }
+
             boolean isCorrect = false;
 
             for (int i = 0; i < secretWord.length(); i++) {
                 if (secretWord.charAt(i) == guess && guessedLetters[i] != guess) {
                     guessedLetters[i] = guess;
+                    guessedLettersSet.add(guess);
                     isCorrect = true;
+                    correctGuesses++;
                 }
             }
 
             if (!isCorrect) {
                 attempts--;
-                incorrectGuesses++;
                 System.out.println("That letter doesn't appear in the word");
-            } else {
-                if (String.valueOf(guessedLetters).equals(secretWord) && attempts > 0) {
-                    System.out.println("You guessed the word!");
-                    System.out.println("You survived!");
-                    return;
-                } else if (incorrectGuesses == 0) {
-                    System.out.println("No improvements");
-                }
             }
 
             System.out.println(String.valueOf(guessedLetters));
 
-            if (attempts == 0) {
+            if (correctGuesses == secretWord.length()) {
+                System.out.println("You guessed the word " + secretWord + "!");
+                System.out.println("You survived!");
+                return;
+            } else if (attempts == 0) {
                 System.out.println("You lost!");
+                return;
             }
         }
     }
