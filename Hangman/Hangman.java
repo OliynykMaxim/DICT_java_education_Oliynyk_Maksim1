@@ -16,6 +16,7 @@ public class Hangman {
         }
 
         int attempts = 8;
+        int incorrectGuesses = 0;
 
         System.out.println("HANGMAN");
         System.out.println(String.valueOf(guessedLetters));
@@ -27,7 +28,7 @@ public class Hangman {
             boolean isCorrect = false;
 
             for (int i = 0; i < secretWord.length(); i++) {
-                if (secretWord.charAt(i) == guess) {
+                if (secretWord.charAt(i) == guess && guessedLetters[i] != guess) {
                     guessedLetters[i] = guess;
                     isCorrect = true;
                 }
@@ -35,19 +36,23 @@ public class Hangman {
 
             if (!isCorrect) {
                 attempts--;
+                incorrectGuesses++;
                 System.out.println("That letter doesn't appear in the word");
+            } else {
+                if (String.valueOf(guessedLetters).equals(secretWord) && attempts > 0) {
+                    System.out.println("You guessed the word!");
+                    System.out.println("You survived!");
+                    return;
+                } else if (incorrectGuesses == 0) {
+                    System.out.println("No improvements");
+                }
             }
 
             System.out.println(String.valueOf(guessedLetters));
 
-            if (String.valueOf(guessedLetters).equals(secretWord)) {
-                System.out.println("Thanks for playing!");
-                System.out.println("We'll see how well you did in the next stage");
-                return;
+            if (attempts == 0) {
+                System.out.println("You lost!");
             }
         }
-
-        System.out.println("Thanks for playing!");
-        System.out.println("We'll see how well you did in the next stage");
     }
 }
