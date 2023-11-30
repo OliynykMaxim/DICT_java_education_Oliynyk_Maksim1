@@ -9,37 +9,45 @@ public class Hangman {
         Random random = new Random();
         int randomIndex = random.nextInt(wordList.length);
         String secretWord = wordList[randomIndex];
+        char[] guessedLetters = new char[secretWord.length()];
 
-        String hint = getHint(secretWord); // Отримуємо підказку
+        for (int i = 0; i < guessedLetters.length; i++) {
+            guessedLetters[i] = '-';
+        }
+
+        int attempts = 8;
 
         System.out.println("HANGMAN");
-        System.out.print("Guess the word " + hint + ": > ");
-
+        System.out.println(String.valueOf(guessedLetters));
         Scanner scanner = new Scanner(System.in);
-        String guessedWord = scanner.nextLine().toLowerCase();
 
-        if (guessedWord.equals(secretWord)) {
-            System.out.println("You survived!");
-        } else {
-            System.out.println("You lost!");
-        }
-    }
+        while (attempts > 0) {
+            System.out.print("Input a letter: > ");
+            char guess = scanner.nextLine().toLowerCase().charAt(0);
+            boolean isCorrect = false;
 
-    // Метод для отримання підказки
-    private static String getHint(String word) {
-        StringBuilder hint = new StringBuilder();
-        for (int i = 0; i < word.length(); i++) {
-            if (i < 2) {
-                hint.append(word.charAt(i));
-            } else {
-                hint.append("-");
+            for (int i = 0; i < secretWord.length(); i++) {
+                if (secretWord.charAt(i) == guess) {
+                    guessedLetters[i] = guess;
+                    isCorrect = true;
+                }
+            }
+
+            if (!isCorrect) {
+                attempts--;
+                System.out.println("That letter doesn't appear in the word");
+            }
+
+            System.out.println(String.valueOf(guessedLetters));
+
+            if (String.valueOf(guessedLetters).equals(secretWord)) {
+                System.out.println("Thanks for playing!");
+                System.out.println("We'll see how well you did in the next stage");
+                return;
             }
         }
-        return hint.toString();
+
+        System.out.println("Thanks for playing!");
+        System.out.println("We'll see how well you did in the next stage");
     }
 }
-
-
-
-
-
